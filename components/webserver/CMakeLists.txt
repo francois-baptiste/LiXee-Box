@@ -11,6 +11,7 @@ idf_component_register(
         "web_tunnel.cpp"
         "web_maint.cpp"
         "web_thermostat.cpp"
+        "web_sensorfusion.cpp"
         "web_compat.cpp"
     INCLUDE_DIRS
         "include"
@@ -46,4 +47,5 @@ idf_component_register(
         mqtt_manager
         thermostat
         delestage
+        sensor_fusion
 )

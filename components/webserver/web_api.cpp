@@ -12,6 +12,7 @@
 #include "web_tunnel.h"
 #include "web_lora.h"
 #include "web_thermostat.h"
+#include "web_sensorfusion.h"
 #include "web_notif.h"
 #include "tunnel.h"
 #include "lora.h"
@@ -48,7 +49,11 @@
 #include <string.h>
 
 #ifndef VERSION
+#ifdef LIXEE_FW_VERSION
+#define VERSION LIXEE_FW_VERSION   // PROJECT_VER du CMakeLists racine
+#else
 #define VERSION "3.2"
+#endif
 #endif
 
 // Fonctions definies dans main.cpp pour le parametre Matter enable/disable
@@ -1880,6 +1885,7 @@ esp_err_t web_api_register_handlers(httpd_handle_t server)
     web_lora_register(server);
     web_notif_register(server);
     web_thermostat_register(server);
+    web_sensorfusion_register(server);
     web_compat_register(server);
 
     // --- Config API ---

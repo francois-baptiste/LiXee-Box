@@ -1241,6 +1241,12 @@ bool mqtt_manager_is_connected(void)
     return s_connected;
 }
 
+esp_err_t mqtt_manager_publish_raw(const char *topic, const char *payload, int qos, bool retain)
+{
+    if (!topic || !topic[0] || !payload) return ESP_ERR_INVALID_ARG;
+    return mqtt_publish(topic, payload, qos, retain);
+}
+
 esp_err_t mqtt_manager_publish_value(const char *ieee_addr,
                                       const char *cluster,
                                       const char *attribute,

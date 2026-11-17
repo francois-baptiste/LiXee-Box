@@ -22,8 +22,15 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 # pour tous les cJSON_Parse du projet ; aucun document legitime n'en approche.
 idf_build_set_property(COMPILE_DEFINITIONS "CJSON_NESTING_LIMIT=32" APPEND)
 
-# Version de l application (esp_app_desc), controlee par la mise a jour OTA
-set(PROJECT_VER "3.2")
+# Version de l application (esp_app_desc), controlee par la mise a jour OTA.
+# Fork SensorFusion : <version officielle>-sf.<revision du fork>, ex. 3.2-sf.1
+#   - LIXEE_UPSTREAM_VER : version officielle LiXee-Box sur laquelle le fork est base
+#   - LIXEE_FORK_REV     : +1 a chaque version du fork ; remis a 1 quand la base change
+# Source unique : PROJECT_VER (esp_app_desc, OTA, mDNS) et LIXEE_FW_VERSION (API web, logs).
+set(LIXEE_UPSTREAM_VER "3.2")
+set(LIXEE_FORK_REV 1)
+set(PROJECT_VER "${LIXEE_UPSTREAM_VER}-sf.${LIXEE_FORK_REV}")
+idf_build_set_property(COMPILE_DEFINITIONS "LIXEE_FW_VERSION=\"${PROJECT_VER}\"" APPEND)
 project(lixee_matter_bridge)
 
 # esp-matter 1.4.2 : closure-control-cluster-logic.cpp ne compile pas avec

@@ -196,6 +196,13 @@ esp_err_t mqtt_manager_publish_discovery_info(uint64_t ieee_addr, const char *mo
                                               const char *manufacturer, int *out_count);
 
 /**
+ * Publie un payload brut sur un topic libre (sans en-tete ziwifi32/).
+ * Non bloquant : le message est mis en file (outbox du client MQTT).
+ * @return ESP_ERR_INVALID_STATE si MQTT n'est pas connecte
+ */
+esp_err_t mqtt_manager_publish_raw(const char *topic, const char *payload, int qos, bool retain);
+
+/**
  * Doit etre appele periodiquement (ex: chaque seconde) depuis la boucle main.
  * Gere le health check et la reconnexion.
  */

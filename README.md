@@ -1,5 +1,14 @@
 # LiXee-Box
 
+> **Fork SensorFusion** : ce dépôt est un fork de [fairecasoimeme/LiXee-Box](https://github.com/fairecasoimeme/LiXee-Box) (v3, ESP-IDF).
+> Il ajoute l'**agrégation de sondes de température Zigbee** publiée en MQTT (ex. pour OpenFrisquetVisio) ; le reste du firmware est identique à l'officiel.
+>
+> - **Fonction** : moyenne, min ou max des sondes choisies (cluster 0x0402, attribut 0x0000, 0,01 °C). Une sonde muette depuis plus de 45 min (réglable) est ignorée. Publication sur `openfrisquet/ext_temp` (réglable), avec au moins 10 s entre deux messages. Le flux Home Assistant `ziwifi32/` n'est pas modifié.
+> - **Interface** : **Mesures → SensorFusion** (valeur fusionnée, état des sondes, réglages) ; API `GET/POST /api/sensorfusion` ; fichier `config/sensorFusion.json`.
+> - **Code** : `components/sensor_fusion/` (module), `components/webserver/web_sensorfusion.cpp` (API), `web_src/js/page_sensorfusion.js` (page).
+> - **Versions** : `<version officielle>-sf.<révision du fork>`, ex. `3.2-sf.1` (variables `LIXEE_UPSTREAM_VER` et `LIXEE_FORK_REV` du `CMakeLists.txt` racine). Ordre : `3.2` < `3.2-sf.1` < `3.2-sf.2` < `3.3`. La page *Mise à jour* signale donc toujours les nouvelles versions officielles ; les installer remplace ce fork.
+> - **Compilation** : ESP-IDF 5.5.2 avec son propre CMake (≥ 3.18, `idf_tools.py install cmake` sous Linux), sans `idf.py set-target` (le `sdkconfig` versionné vise déjà l'ESP32-S3). Pour une mise à jour manuelle, envoyez un `update.tar` (`firmware.bin` + `web/…`) : un `.bin` seul ne met pas à jour les pages web.
+
 ## Description
 
 **LiXee-Box** est une passerelle multi-protocole pour appareils **Zigbee** et **LoRa 2.4 GHz**, conçue pour être un hub central de **gestion de l'énergie** et de domotique. Cette application transforme votre LiXee-ZiWifi32 en une passerelle complète capable de gérer vos appareils Zigbee, votre Linky, compteur de production, gaz, eau, et d'intégrer le tout dans votre système domotique.

@@ -41,6 +41,7 @@
 #include "device_setup.h"
 #include "ntp_sync.h"
 #include "mqtt_manager.h"
+#include "SensorFusion.h"
 #include "energy_history.h"
 #include "zigate_driver.h"
 #include "zigate_actions.h"
@@ -71,7 +72,11 @@
 
 // Version du firmware (peut etre surchargee par -DVERSION=... dans CMake)
 #ifndef VERSION
+#ifdef LIXEE_FW_VERSION
+#define VERSION LIXEE_FW_VERSION   // PROJECT_VER du CMakeLists racine
+#else
 #define VERSION "3.2"
+#endif
 #endif
 
 static const char *TAG = "MAIN";
@@ -310,6 +315,12 @@ static void process_attribute(uint64_t ieee, const zigate_attribute_report_t *re
 
     cluster_interpreted_t interp = {};
     cluster_handler_dispatch(&cr, &interp);
+
+    // Agregation des sondes de temperature -> OpenFrisquetVisio (MQTT).
+    // Simple memorisation ici : la publication se fait dans la boucle main.
+    if (report->cluster_id == 0x0402 && report->attr_id == 0x0000 && interp.has_float) {
+        sensor_fusion_on_temperature(ieee, interp.float_value);
+    }
 
     // Log la valeur interpretee si disponible
     if (interp.has_float) {
@@ -1428,6 +1439,7 @@ extern "C" void app_main(void)
 
     // 3c. MQTT Manager (initialise le client, ne se connecte pas encore)
     mqtt_manager_init();  // Non-fatal si MQTT desactive ou pas configure
+    sensor_fusion_init(); // Agregation de sondes de temperature (OpenFrisquetVisio)
 
     // 4. ZiGate driver (UART + reseau Zigbee)
     ESP_ERROR_CHECK(zigate_init());
@@ -1678,6 +1690,9 @@ extern "C" void app_main(void)
 
         // MQTT: health check + reconnexion (chaque seconde)
         mqtt_manager_loop();
+
+        // Temperature fusionnee -> openfrisquet/ext_temp (anti-rebond 10 s)
+        sensor_fusion_loop();
 
         // Statistiques de puissance (traitement toutes les 10 s, ecriture horaire)
         power_stats_loop();

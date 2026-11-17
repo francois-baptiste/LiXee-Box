@@ -359,14 +359,21 @@
   // est plus recente. La release peut encore porter le firmware Arduino de la
   // LiXee-Box (2.x), que le pont refuse : pas de "nouveaute" pour une version
   // plus ancienne que celle installee.
+  // Fork SensorFusion : "3.2-sf.1" = version officielle 3.2, revision 1 du
+  // fork. La base officielle est comparee d'abord, puis la revision du fork
+  // (0 pour une version officielle) : 3.2 < 3.2-sf.1 < 3.2-sf.2 < 3.3.
   function cmpVer(a, b) {
-    var x = stripV(a).split(/[^0-9]+/).filter(Boolean).map(Number);
-    var y = stripV(b).split(/[^0-9]+/).filter(Boolean).map(Number);
-    for (var i = 0; i < Math.max(x.length, y.length); i++) {
-      var d = (x[i] || 0) - (y[i] || 0);
+    function parse(v) {
+      var m = stripV(v).split(/-sf\.?/i);
+      return { base: m[0].split(/[^0-9]+/).filter(Boolean).map(Number),
+               rev: m.length > 1 ? parseInt(m[1], 10) || 0 : 0 };
+    }
+    var x = parse(a), y = parse(b);
+    for (var i = 0; i < Math.max(x.base.length, y.base.length); i++) {
+      var d = (x.base[i] || 0) - (y.base[i] || 0);
       if (d) return d;
     }
-    return 0;
+    return x.rev - y.rev;
   }
 
   function pageUpdate() {

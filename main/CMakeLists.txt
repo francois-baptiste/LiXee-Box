@@ -22,6 +22,7 @@ idf_component_register(
         device_setup
         ntp_sync
         mqtt_manager
+        sensor_fusion
         energy_history
         energy_service
         thermostat

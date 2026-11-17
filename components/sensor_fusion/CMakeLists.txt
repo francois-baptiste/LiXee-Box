@@ -1,0 +1,15 @@
+idf_component_register(
+    SRCS
+        "SensorFusion.cpp"
+    INCLUDE_DIRS
+        "include"
+    REQUIRES
+        esp_common
+    PRIV_REQUIRES
+        log
+        json
+        esp_timer
+        freertos
+        mqtt_manager
+        config_manager
+)
