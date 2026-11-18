@@ -158,8 +158,13 @@ esp_err_t maint_mark_pending(void)
 // API GitHub de la meme release, lue par la page.
 // ----------------------------------------------------------------------------
 
-#define MAINT_UPDATE_URL  "https://github.com/fairecasoimeme/LiXee-Box/releases/latest/download/update.tar"
-#define MAINT_INFO_URL    "https://api.github.com/repos/fairecasoimeme/LiXee-Box/releases/latest"
+// Fork SensorFusion : depot de publication fixe a la compilation
+// (LIXEE_UPDATE_REPO du CMakeLists racine), depot officiel a defaut.
+#ifndef LIXEE_UPDATE_REPO
+#define LIXEE_UPDATE_REPO "fairecasoimeme/LiXee-Box"
+#endif
+#define MAINT_UPDATE_URL  "https://github.com/" LIXEE_UPDATE_REPO "/releases/latest/download/update.tar"
+#define MAINT_INFO_URL    "https://api.github.com/repos/" LIXEE_UPDATE_REPO "/releases/latest"
 
 static const char s_update_url[] = MAINT_UPDATE_URL;
 static const char s_info_url[]   = MAINT_INFO_URL;

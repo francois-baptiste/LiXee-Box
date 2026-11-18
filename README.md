@@ -7,6 +7,7 @@
 > - **Interface** : **Mesures → SensorFusion** (valeur fusionnée, état des sondes, réglages) ; API `GET/POST /api/sensorfusion` ; fichier `config/sensorFusion.json`.
 > - **Code** : `components/sensor_fusion/` (module), `components/webserver/web_sensorfusion.cpp` (API), `web_src/js/page_sensorfusion.js` (page).
 > - **Versions** : `<version officielle>-sf.<révision du fork>`, ex. `3.2-sf.1` (variables `LIXEE_UPSTREAM_VER` et `LIXEE_FORK_REV` du `CMakeLists.txt` racine). Ordre : `3.2` < `3.2-sf.1` < `3.2-sf.2` < `3.3`. La page *Mise à jour* signale donc toujours les nouvelles versions officielles ; les installer remplace ce fork.
+> - **Mises à jour** : à partir de `3.2-sf.2`, la page *Mise à jour* de la box lit les [releases de ce fork](https://github.com/francois-baptiste/LiXee-Box/releases) (`LIXEE_UPDATE_REPO` du `CMakeLists.txt`) et installe l'asset `update.tar` de la dernière release. Publier : incrémenter `LIXEE_FORK_REV`, `idf.py build`, `python3 tools/make_update_tar.py`, puis release GitHub `v<version>` avec `build/update.tar`. Pour revenir au firmware officiel, envoyer manuellement son `update.tar`.
 > - **Compilation** : ESP-IDF 5.5.2 avec son propre CMake (≥ 3.18, `idf_tools.py install cmake` sous Linux), sans `idf.py set-target` (le `sdkconfig` versionné vise déjà l'ESP32-S3). Pour une mise à jour manuelle, envoyez un `update.tar` (`firmware.bin` + `web/…`) : un `.bin` seul ne met pas à jour les pages web.
 
 ## Description

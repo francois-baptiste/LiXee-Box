@@ -28,10 +28,21 @@ idf_build_set_property(COMPILE_DEFINITIONS "CJSON_NESTING_LIMIT=32" APPEND)
 #   - LIXEE_FORK_REV     : +1 a chaque version du fork ; remis a 1 quand la base change
 # Source unique : PROJECT_VER (esp_app_desc, OTA, mDNS) et LIXEE_FW_VERSION (API web, logs).
 set(LIXEE_UPSTREAM_VER "3.2")
-set(LIXEE_FORK_REV 1)
+set(LIXEE_FORK_REV 2)
 set(PROJECT_VER "${LIXEE_UPSTREAM_VER}-sf.${LIXEE_FORK_REV}")
-idf_build_set_property(COMPILE_DEFINITIONS "LIXEE_FW_VERSION=\"${PROJECT_VER}\"" APPEND)
+# Source des mises a jour (page Mise a jour) : releases GitHub de ce depot,
+# asset "update.tar" (firmware.bin + web/...) de la derniere release, tag v<PROJECT_VER>
+set(LIXEE_UPDATE_REPO "francois-baptiste/LiXee-Box")
 project(lixee_matter_bridge)
+
+# Version et source des mises a jour : limitees aux composants qui s'en
+# servent (une definition globale recompilerait Matter a chaque version)
+idf_component_get_property(_main_lib main COMPONENT_LIB)
+idf_component_get_property(_web_lib webserver COMPONENT_LIB)
+idf_component_get_property(_maint_lib maintenance COMPONENT_LIB)
+target_compile_definitions(${_main_lib} PRIVATE "LIXEE_FW_VERSION=\"${PROJECT_VER}\"")
+target_compile_definitions(${_web_lib} PRIVATE "LIXEE_FW_VERSION=\"${PROJECT_VER}\"")
+target_compile_definitions(${_maint_lib} PRIVATE "LIXEE_UPDATE_REPO=\"${LIXEE_UPDATE_REPO}\"")
 
 # esp-matter 1.4.2 : closure-control-cluster-logic.cpp ne compile pas avec
 # GCC 14 en C++23 (operator== de Nullable<T>, regles de reecriture C++20).
